@@ -7,7 +7,7 @@
     "version": { "code": 1, "name": "1.0.0" },
     "vender": "avvnsk-collab",
     "description": "Mercedes-AMG Petronas F1 watchface for Amazfit Balance 2",
-    "cover": ["preview.png"]
+    "icon": "preview.png"
   },
   "permissions": ["data:user.hd.step", "data:user.hd.heart_rate"],
   "runtime": {
