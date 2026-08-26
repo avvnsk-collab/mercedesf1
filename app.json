@@ -27,9 +27,9 @@
         }
       },
       "platforms": [
-        { "name": "Amazfit Balance 2 CN", "deviceSource": 9568512, "st": "r" },
-        { "name": "Amazfit Balance 2", "deviceSource": 9568513, "st": "r" },
-        { "name": "Amazfit Balance 2", "deviceSource": 9568515, "st": "r" }
+        { "name": "Amazfit Balance 2 CN", "deviceSource": 9568512, "st": "r", "sr": "w480" },
+        { "name": "Amazfit Balance 2", "deviceSource": 9568513, "st": "r", "sr": "w480" },
+        { "name": "Amazfit Balance 2", "deviceSource": 9568515, "st": "r", "sr": "w480" }
       ],
       "designWidth": 480
     }
