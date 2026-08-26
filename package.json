@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "assets": "python3 tools/generate_assets.py",
-    "build": "npm run assets && zpm build -p ."
+    "build": "npm run assets && zpm build"
   },
   "devDependencies": {
     "@zeppos/zpm": "3.4.2"
