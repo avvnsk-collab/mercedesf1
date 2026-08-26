@@ -1,0 +1,12 @@
+{
+  "name": "mercedes-f1-balance2",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "assets": "python3 tools/generate_assets.py",
+    "build": "npm run assets && zeus build"
+  },
+  "devDependencies": {
+    "@zeppos/zeus-cli": "1.9.3"
+  }
+}
