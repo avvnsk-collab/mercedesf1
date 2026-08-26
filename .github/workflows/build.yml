@@ -8,8 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,24 +31,8 @@ jobs:
       - name: Generate assets
         run: npm run assets
 
-      - name: Capture zpm diagnostics once
-        shell: bash
-        run: |
-          if [ ! -f diagnostics/zpm_help.txt ]; then
-            mkdir -p diagnostics
-            (npx zpm --help || true) > diagnostics/zpm_help.txt 2>&1
-            (npx zpm build --help || true) > diagnostics/zpm_build_help.txt 2>&1
-            find node_modules/@zeppos/zpm -type f | sort > diagnostics/zpm_files.txt
-            grep -R -n -C 8 "resolveTarget" node_modules/@zeppos/zpm > diagnostics/resolve_target.txt || true
-            git config user.name github-actions
-            git config user.email github-actions@github.com
-            git add diagnostics
-            git commit -m "Add temporary zpm diagnostics"
-            git push
-          fi
-
       - name: Build watchface
-        run: npx zpm build -p "$GITHUB_WORKSPACE"
+        run: npx zpm build -t balance-2 -p "$GITHUB_WORKSPACE"
 
       - name: Collect package
         shell: bash
