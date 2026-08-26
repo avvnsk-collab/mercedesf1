@@ -1,0 +1,17 @@
+Usage: zpm <command> [options]
+
+Commands:
+  zpm cloud    项目打包
+  zpm build    项目打包
+  zpm dev      项目打包
+  zpm preview  项目打包
+  zpm prune    打包后清理
+  zpm resize   图片缩放
+
+Options:
+  -h, --help     Show help                                             [boolean]
+  -v, --version  Show version number                                   [boolean]
+
+Examples:
+  zpm build   将当前目录文件进行打包
+  zpm resize  缩放图片工具
