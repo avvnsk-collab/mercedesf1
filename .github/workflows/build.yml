@@ -31,8 +31,15 @@ jobs:
       - name: Generate assets
         run: npm run assets
 
+      - name: Inspect zpm usage
+        shell: bash
+        run: |
+          npx zpm --help || true
+          npx zpm build --help || true
+          grep -R -n "resolveTarget" node_modules/@zeppos/zpm | head -20 || true
+
       - name: Build watchface
-        run: npx zpm build
+        run: npx zpm build -p "$GITHUB_WORKSPACE"
 
       - name: Collect package
         shell: bash
