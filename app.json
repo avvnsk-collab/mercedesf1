@@ -1,0 +1,43 @@
+{
+  "configVersion": "v3",
+  "app": {
+    "appId": 710082602,
+    "appName": "Mercedes F1",
+    "appType": "watchface",
+    "version": { "code": 1, "name": "1.0.0" },
+    "vender": "avvnsk-collab",
+    "description": "Mercedes-AMG Petronas F1 watchface for Amazfit Balance 2",
+    "cover": ["preview.png"]
+  },
+  "permissions": ["data:user.hd.step", "data:user.hd.heart_rate"],
+  "runtime": {
+    "apiVersion": {
+      "compatible": "4.2.0",
+      "target": "4.2.0",
+      "minVersion": "4.2.0"
+    }
+  },
+  "targets": {
+    "balance-2": {
+      "module": {
+        "watchface": {
+          "path": "watchface/index",
+          "main": 1,
+          "editable": 0
+        }
+      },
+      "platforms": [
+        { "name": "Amazfit Balance 2 CN", "deviceSource": 9568512, "st": "r" },
+        { "name": "Amazfit Balance 2", "deviceSource": 9568513, "st": "r" },
+        { "name": "Amazfit Balance 2", "deviceSource": 9568515, "st": "r" }
+      ],
+      "designWidth": 480
+    }
+  },
+  "i18n": {
+    "en-US": { "appName": "Mercedes F1" },
+    "zh-CN": { "appName": "Mercedes F1" },
+    "zh-TW": { "appName": "Mercedes F1" }
+  },
+  "defaultLanguage": "en-US"
+}
