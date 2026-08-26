@@ -64,20 +64,6 @@ jobs:
           print('Mercedes F1 source validation OK')
           PY
 
-      - name: Normalize PNG resources
-        run: |
-          set -euo pipefail
-          python -m pip install --quiet pillow
-          python - <<'PY'
-          from pathlib import Path
-          from PIL import Image
-          for p in Path('build-src/assets').rglob('*.png'):
-              with Image.open(p) as im:
-                  if im.mode != 'RGBA':
-                      im = im.convert('RGBA')
-                  im.save(p, format='PNG')
-          PY
-
       - name: Build with Zeus
         working-directory: build-src
         run: |
