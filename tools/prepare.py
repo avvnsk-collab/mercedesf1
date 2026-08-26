@@ -21,7 +21,8 @@ shutil.copyfile('watchface/index.js', ROOT / 'watchface' / 'index.js')
 
 assets = ROOT / 'assets'
 assets.mkdir(parents=True, exist_ok=True)
-b64 = Path('assets/mercedes_bg.b64').read_text(encoding='ascii').strip()
+b64 = ''.join(Path('assets/mercedes_bg.b64').read_text(encoding='ascii').split())
+b64 += '=' * (-len(b64) % 4)
 (assets / 'mercedes_bg.jpg').write_bytes(base64.b64decode(b64))
 
 print('Prepared Mercedes F1')
