@@ -1,0 +1,132 @@
+name: Build Mercedes F1 Balance 2
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mercedes-f1-balance2
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Zeus
+        run: npm install -g @zeppos/zeus-cli
+
+      - name: Download approved AMG Petronas source
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 --retry-delay 2 \
+            'https://raw.githubusercontent.com/avvnsk-collab/watchfacenew/main/amg_petronas_Balance_2_reference_match_source.zip' \
+            -o approved-source.zip
+          test -s approved-source.zip
+
+      - name: Unpack approved source
+        run: |
+          set -euo pipefail
+          rm -rf build-src
+          mkdir build-src
+          unzip -q approved-source.zip -d build-src
+          test -f build-src/app.json
+          test -f build-src/watchface/index.js
+
+      - name: Apply Mercedes F1 identity and design
+        run: |
+          set -euo pipefail
+          python tools/prepare.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path('build-src/app.json').read_text(encoding='utf-8'))
+          assert data['app']['appId'] == 710082602
+          assert data['app']['appName'] == 'Mercedes F1'
+          assert Path('build-src/assets/mercedes_bg.jpg').stat().st_size > 10000
+          assert 'SYSTEM_APP' not in Path('build-src/watchface/index.js').read_text(encoding='utf-8')
+          print('Mercedes F1 source validation OK')
+          PY
+
+      - name: Normalize PNG resources
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet pillow
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          for p in Path('build-src/assets').rglob('*.png'):
+              with Image.open(p) as im:
+                  if im.mode != 'RGBA':
+                      im = im.convert('RGBA')
+                  im.save(p, format='PNG')
+          PY
+
+      - name: Build with Zeus
+        working-directory: build-src
+        run: |
+          set -euo pipefail
+          zeus build
+
+      - name: Collect packages
+        run: |
+          set -euo pipefail
+          rm -rf release-new zab-unpacked
+          mkdir -p release-new zab-unpacked
+          zab=$(find build-src/dist -type f -name '*.zab' -print -quit)
+          test -n "$zab"
+          test -s "$zab"
+          cp "$zab" release-new/mercedes_f1_Balance_2.zab
+          unzip -q "$zab" -d zab-unpacked
+          zpk=$(find zab-unpacked -type f -name '*.zpk' -print -quit)
+          test -n "$zpk"
+          test -s "$zpk"
+          cp "$zpk" release-new/mercedes_f1_Balance_2.zpk
+          cd release-new
+          sha256sum mercedes_f1_Balance_2.zab mercedes_f1_Balance_2.zpk > SHA256SUMS.txt
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mercedes-f1-balance2
+          path: |
+            release-new/mercedes_f1_Balance_2.zab
+            release-new/mercedes_f1_Balance_2.zpk
+            release-new/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish verified build
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git reset --hard origin/main
+          mkdir -p release
+          cp -f release-new/mercedes_f1_Balance_2.zab release/mercedes_f1_Balance_2.zab
+          cp -f release-new/mercedes_f1_Balance_2.zpk release/mercedes_f1_Balance_2.zpk
+          cp -f release-new/SHA256SUMS.txt release/SHA256SUMS.txt
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add release/mercedes_f1_Balance_2.zab release/mercedes_f1_Balance_2.zpk release/SHA256SUMS.txt
+          if git diff --cached --quiet; then
+            echo 'No release changes to commit'
+          else
+            git commit -m 'Publish Mercedes F1 Balance 2 build'
+            git push origin HEAD:main
+          fi
