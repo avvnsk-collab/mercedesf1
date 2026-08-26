@@ -7,7 +7,6 @@
     "build": "npm run assets && zeus build"
   },
   "devDependencies": {
-    "@zeppos/zeus-cli": "1.9.3",
-    "zeppos-app-utils": "0.3.1"
+    "@zeppos/zeus-cli": "1.9.3"
   }
 }
