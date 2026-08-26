@@ -1,0 +1,54 @@
+name: Build Mercedes F1 Watchface
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install asset dependency
+        run: python -m pip install --disable-pip-version-check pillow
+
+      - name: Install Zepp toolchain
+        run: npm install
+
+      - name: Generate assets
+        run: npm run assets
+
+      - name: Build watchface
+        run: npx zeus build
+
+      - name: Collect package
+        shell: bash
+        run: |
+          mkdir -p dist
+          find . -type f \( -name '*.zab' -o -name '*.zpk' \) -print -exec cp {} dist/ \;
+          if [ -z "$(ls -A dist)" ]; then
+            echo 'No watchface package was produced.'
+            find . -maxdepth 4 -type f | sort
+            exit 1
+          fi
+
+      - name: Upload watchface
+        uses: actions/upload-artifact@v4
+        with:
+          name: mercedes-f1-balance2
+          path: dist/*
+          if-no-files-found: error
