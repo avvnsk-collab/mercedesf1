@@ -32,7 +32,7 @@ jobs:
         run: npm run assets
 
       - name: Build watchface
-        run: npx zpm build -p .
+        run: npx zpm build
 
       - name: Collect package
         shell: bash
