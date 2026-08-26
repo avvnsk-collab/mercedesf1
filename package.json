@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "assets": "python3 tools/generate_assets.py",
-    "build": "npm run assets && zpm build"
+    "build": "npm run assets && zeus build"
   },
   "devDependencies": {
-    "@zeppos/zpm": "3.4.2"
+    "@zeppos/zeus-cli": "1.9.3",
+    "zeppos-app-utils": "0.3.1"
   }
 }
